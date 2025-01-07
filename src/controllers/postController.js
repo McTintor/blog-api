@@ -68,5 +68,5 @@ module.exports = {
   getAllPosts,
   getPostById,
   updatePost,
-  deletePost,
+  deletePost
 };

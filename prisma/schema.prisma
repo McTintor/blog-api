@@ -15,6 +15,7 @@ model User {
   role      String   @default("reader") // "reader" or "author"
   createdAt DateTime @default(now())
   posts     Post[]   @relation("UserPosts") // Reverse relation
+  comments  Comment[] // Reverse relation for comments
 }
 
 model Post {
@@ -35,4 +36,6 @@ model Comment {
   createdAt DateTime @default(now())
   postId    Int
   post      Post     @relation(fields: [postId], references: [id])
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
 }
