@@ -4,6 +4,7 @@ const prisma = new PrismaClient();
 // Create a new post
 const createPost = async (req, res) => {
   try {
+    console.log("Request body received:", req.body);
     const { title, content, published } = req.body;
     const { id: authorId } = req.user; // Assumes req.user is populated by Passport
     const newPost = await prisma.post.create({
@@ -18,7 +19,16 @@ const createPost = async (req, res) => {
 // Get all posts
 const getAllPosts = async (req, res) => {
   try {
-    const posts = await prisma.post.findMany({ where: { published: true } });
+    const posts = await prisma.post.findMany({ 
+      where: { published: true },
+      include: {
+        author: {
+          select: {
+            username: true, // Include only the username of the author
+          },
+        },
+      },
+    });
     res.json(posts);
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch posts" });
