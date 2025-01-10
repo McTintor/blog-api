@@ -24,7 +24,16 @@ const getAllPosts = async (req, res) => {
       include: {
         author: {
           select: {
-            username: true, // Include only the username of the author
+            username: true,
+          },
+        },
+        comments: {
+          include: {
+            user: {
+              select: {
+                username: true, // Include the username of the commenter
+              },
+            },
           },
         },
       },
