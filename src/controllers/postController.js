@@ -47,8 +47,14 @@ const getAllPosts = async (req, res) => {
 // Get a single post by ID
 const getPostById = async (req, res) => {
   try {
-    const { id } = req.params;
-    const post = await prisma.post.findUnique({ where: { id: parseInt(id) } });
+    const { postId } = req.params;
+    const post = await prisma.post.findUnique({ 
+      where: { id: parseInt(postId) },
+      include: {
+        author: { select: { username: true } },
+        comments: { include: { user: { select: { username: true } } } },
+      },
+     });
     if (!post) return res.status(404).json({ error: "Post not found" });
     res.json(post);
   } catch (error) {

@@ -14,7 +14,7 @@ const router = express.Router();
 router.get("/", getAllPosts);
 
 // Public route to get a single post by ID
-router.get("/:id", getPostById);
+router.get("/:postId", getPostById);
 
 // Protected route to create a new post
 router.post(
