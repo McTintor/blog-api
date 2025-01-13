@@ -2,7 +2,7 @@ const express = require("express");
 const { 
   registerUser, 
   loginUser, 
-  getUserDetails 
+  getUserDetails
 } = require("../controllers/userController");
 const passport = require("passport");
 
@@ -20,5 +20,7 @@ router.get(
   passport.authenticate("jwt", { session: false }),
   getUserDetails
 );
+
+// router.post("/admin/promote", checkRole('admin'), promoteUser);
 
 module.exports = router;

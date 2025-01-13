@@ -80,8 +80,8 @@ const updatePost = async (req, res) => {
 // Delete a post
 const deletePost = async (req, res) => {
   try {
-    const { id } = req.params;
-    await prisma.post.delete({ where: { id: parseInt(id) } });
+    const { postId } = req.params;
+    await prisma.post.delete({ where: { id: parseInt(postId) } });
     res.json({ message: "Post deleted" });
   } catch (error) {
     res.status(500).json({ error: "Failed to delete post" });

@@ -13,10 +13,12 @@ app.use(passport.initialize());
 const postRoutes = require("./routes/posts");
 const userRoutes = require("./routes/users");
 const commentRoutes = require("./routes/comments");
+const adminRoutes = require("./routes/admin");
 
 app.use("/api/posts", postRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/comments", commentRoutes);
+app.use("/api/", adminRoutes);
 
 const PORT = process.env.PORT || 5000;
 

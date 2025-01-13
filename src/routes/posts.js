@@ -25,14 +25,14 @@ router.post(
 
 // Protected route to update a post
 router.put(
-  "/:id",
+  "/:postId",
   passport.authenticate("jwt", { session: false }),
   updatePost
 );
 
 // Protected route to delete a post
 router.delete(
-  "/:id",
+  "/:postId",
   passport.authenticate("jwt", { session: false }),
   deletePost
 );
