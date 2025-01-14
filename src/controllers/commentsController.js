@@ -51,44 +51,47 @@ const createComment = async (req, res) => {
     const commentId = parseInt(req.params.commentId, 10);
     const { content } = req.body;
     const userId = req.user.id;
-
+    const userRole = req.user.role; // Assuming `role` is part of the `req.user` object
+  
     try {
       const comment = await prisma.comment.findUnique({
         where: { id: Number(commentId) },
         include: { post: true }, // Include the post to check author
       });
       if (!comment) return res.status(404).json({ message: "Comment not found" });
-
-      // Check if the user is the comment creator or the post author
-      if (comment.userId !== userId && comment.post.authorId !== userId) {
+  
+      // Check if the user is the comment creator, the post author, or an admin
+      if (comment.userId !== userId && comment.post.authorId !== userId && userRole !== "admin") {
         return res.status(403).json({ message: "You are not authorized to edit this comment" });
       }
-
+  
       const updatedComment = await prisma.comment.update({
         where: { id: Number(commentId) },
         data: { content },
       });
-
+  
       res.status(200).json({ message: "Comment updated", updatedComment });
     } catch (error) {
       res.status(500).json({ message: "Failed to update comment", error });
     }
   };
   
+  
   // Delete a comment
   const deleteComment = async (req, res) => {
     const commentId = parseInt(req.params.commentId, 10); // Parse commentId to an integer
     const userId = req.user.id;
+    const userRole = req.user.role; // Assuming `role` is part of the `req.user` object
   
     try {
       const comment = await prisma.comment.findUnique({ where: { id: commentId } });
   
       if (!comment) return res.status(404).json({ error: "Comment not found" });
   
-      // Ensure the user is the comment author or the post author
+      // Ensure the user is the comment author, the post author, or an admin
       const post = await prisma.post.findUnique({ where: { id: comment.postId } });
   
-      if (comment.userId !== userId && post.authorId !== userId) {
+      if (comment.userId !== userId && post.authorId !== userId && userRole !== "admin") {
         return res.status(403).json({ error: "Unauthorized to delete this comment" });
       }
   
@@ -98,7 +101,8 @@ const createComment = async (req, res) => {
       console.error(error);
       res.status(500).json({ error: "Failed to delete comment" });
     }
-  };  
+  };
+    
 
   module.exports = {
     createComment,
