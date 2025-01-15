@@ -115,11 +115,92 @@ const deletePost = async (req, res) => {
   }
 };
 
+const getPostsByAuthorUsername = async (req, res) => {
+  const { username } = req.params;
+
+  try {
+    // Fetch the user by username
+    const author = await prisma.user.findUnique({
+      where: { username },
+    });
+
+    if (!author) {
+      return res.status(404).json({ message: "Author not found." });
+    }
+
+    // Fetch posts by the author
+    const posts = await prisma.post.findMany({
+      where: { authorId: author.id },
+      include: {
+        author: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: "desc", // Optional: Order posts by creation date
+      },
+    });
+
+    if (!posts.length) {
+      return res.status(404).json({ message: "No posts found for this author." });
+    }
+
+    return res.status(200).json(posts);
+  } catch (err) {
+    console.error("Error fetching posts by author username:", err);
+    return res.status(500).json({ message: "An error occurred while fetching posts." });
+  }
+};
+
+const searchPosts = async (req, res) => {
+  const { query } = req.query;
+
+  if (!query) {
+    return res.status(400).json({ message: "Search query is required" });
+  }
+
+  try {
+    const posts = await prisma.post.findMany({
+      where: {
+        OR: [
+          {
+            title: {
+              contains: query,
+              mode: "insensitive", // Case-insensitive search
+            },
+          },
+          {
+            author: {
+              username: {
+                contains: query,
+                mode: "insensitive",
+              },
+            },
+          },
+        ],
+      },
+      include: {
+        author: true, // Include author information
+      },
+    });
+
+    res.json(posts);
+  } catch (err) {
+    console.error("Error searching posts:", err);
+    res.status(500).json({ message: "Error searching posts" });
+  }
+};
+
 
 module.exports = {
   createPost,
   getAllPosts,
   getPostById,
   updatePost,
-  deletePost
+  deletePost,
+  getPostsByAuthorUsername,
+  searchPosts
 };

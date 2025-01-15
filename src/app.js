@@ -14,11 +14,13 @@ const postRoutes = require("./routes/posts");
 const userRoutes = require("./routes/users");
 const commentRoutes = require("./routes/comments");
 const adminRoutes = require("./routes/admin");
+const searchRoutes = require("./routes/search");
 
 app.use("/api/posts", postRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/comments", commentRoutes);
 app.use("/api/", adminRoutes);
+app.use("/api/", searchRoutes);
 
 const PORT = process.env.PORT || 5000;
 
