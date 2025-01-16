@@ -4,17 +4,21 @@ const prisma = new PrismaClient();
 // Create a new post
 const createPost = async (req, res) => {
   try {
-    console.log("Request body received:", req.body);
-    const { title, content, published } = req.body;
-    const { id: authorId } = req.user; // Assumes req.user is populated by Passport
+    if (!["author", "admin"].includes(req.user.role)) {
+      return res.status(403).json({ message: "Forbidden: Insufficient permissions" });
+    }
+
+    const { title, content } = req.body;
+    const { id: authorId } = req.user;
     const newPost = await prisma.post.create({
-      data: { title, content, published, authorId },
+      data: { title, content, authorId },
     });
     res.status(201).json(newPost);
   } catch (error) {
     res.status(500).json({ error: "Failed to create post" });
   }
 };
+
 
 // Get all posts
 const getAllPosts = async (req, res) => {
