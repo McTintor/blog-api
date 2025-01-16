@@ -5,20 +5,20 @@ const {
   getPostById, 
   updatePost, 
   deletePost, 
-  getPostsByAuthorUsername, 
+  getPostsByAuthorUsername 
 } = require("../controllers/postController");
 const passport = require("passport");
 const checkRole = require("../middlewares/role");
 
 const router = express.Router();
 
-// Public route to get all published posts
+// Public route to get all published posts with pagination
 router.get("/", getAllPosts);
 
 // Public route to get a single post by ID
 router.get("/:postId", getPostById);
 
-// Public route to get posts by author username
+// Public route to get posts by author username with pagination
 router.get("/author/:username", getPostsByAuthorUsername);
 
 // Protected route to create a new post (Authors and Admins only)
