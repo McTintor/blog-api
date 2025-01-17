@@ -41,7 +41,7 @@ const getAllPosts = async (req, res) => {
           include: {
             user: {
               select: {
-                username: true, // Include the username of the commenter
+                username: true,
               },
             },
           },
@@ -49,7 +49,7 @@ const getAllPosts = async (req, res) => {
       },
     });
 
-    // Get total count of posts to calculate total pages
+    
     const totalPosts = await prisma.post.count({
       where: { published: true },
     });
@@ -88,7 +88,7 @@ const getPostById = async (req, res) => {
 // Update a post
 const updatePost = async (req, res) => {
   try {
-    const { postId } = req.params; // Match the route parameter name
+    const { postId } = req.params;
     const { title, content, published } = req.body;
 
     if (!title || !content) {
@@ -111,10 +111,10 @@ const updatePost = async (req, res) => {
 const deletePost = async (req, res) => {
   try {
     const { postId } = req.params;
-    const userId = req.user.id; // Current user ID
-    const userRole = req.user.role; // Current user role
+    const userId = req.user.id;
+    const userRole = req.user.role;
 
-    // Fetch the post to verify ownership
+    
     const post = await prisma.post.findUnique({
       where: { id: parseInt(postId) },
     });
@@ -123,12 +123,12 @@ const deletePost = async (req, res) => {
       return res.status(404).json({ error: "Post not found" });
     }
 
-    // Check if the user is either an admin or the author of the post
+    
     if (userRole !== "admin" && post.authorId !== userId) {
       return res.status(403).json({ message: "Forbidden: Insufficient permissions" });
     }
 
-    // Proceed to delete the post
+    
     await prisma.post.delete({ where: { id: parseInt(postId) } });
     res.json({ message: "Post deleted" });
   } catch (error) {
@@ -145,7 +145,7 @@ const getPostsByAuthorUsername = async (req, res) => {
   const take = parseInt(pageSize);
 
   try {
-    // Fetch the user by username
+    
     const author = await prisma.user.findUnique({
       where: { username },
     });
@@ -154,7 +154,7 @@ const getPostsByAuthorUsername = async (req, res) => {
       return res.status(404).json({ message: "Author not found." });
     }
 
-    // Fetch posts by the author
+    
     const posts = await prisma.post.findMany({
       where: { authorId: author.id },
       skip,
@@ -168,11 +168,11 @@ const getPostsByAuthorUsername = async (req, res) => {
         },
       },
       orderBy: {
-        createdAt: "desc", // Optional: Order posts by creation date
+        createdAt: "desc",
       },
     });
 
-    // Get total count of posts for this author
+    
     const totalPosts = await prisma.post.count({
       where: { authorId: author.id },
     });
@@ -195,7 +195,7 @@ const getPostsByAuthorUsername = async (req, res) => {
   }
 };
 
-// Search posts with pagination
+
 const searchPosts = async (req, res) => {
   const { query, page = 1, pageSize = 10 } = req.query;
 
@@ -203,17 +203,17 @@ const searchPosts = async (req, res) => {
     return res.status(400).json({ message: "Search query is required" });
   }
 
-  const skip = (page - 1) * pageSize; // Calculate the offset for pagination
+  const skip = (page - 1) * pageSize;
 
   try {
-    // Fetch the matching posts
+    
     const posts = await prisma.post.findMany({
       where: {
         OR: [
           {
             title: {
               contains: query,
-              mode: "insensitive", // Case-insensitive search
+              mode: "insensitive",
             },
           },
           {
@@ -233,11 +233,11 @@ const searchPosts = async (req, res) => {
           },
         },
       },
-      skip, // Apply the skip (offset)
-      take: parseInt(pageSize, 10), // Limit the number of posts returned
+      skip, 
+      take: parseInt(pageSize, 10), 
     });
 
-    // Get total count of posts matching the search query
+    
     const totalPosts = await prisma.post.count({
       where: {
         OR: [
@@ -259,13 +259,13 @@ const searchPosts = async (req, res) => {
       },
     });
 
-    const totalPages = Math.ceil(totalPosts / pageSize); // Calculate total pages
+    const totalPages = Math.ceil(totalPosts / pageSize);
 
     res.status(200).json({
-      posts, // Paginated posts
-      page: parseInt(page, 10), // Current page
-      totalPages, // Total pages
-      totalPosts, // Total number of posts
+      posts,
+      page: parseInt(page, 10),
+      totalPages,
+      totalPosts,
     });
   } catch (err) {
     console.error("Error searching posts:", err);

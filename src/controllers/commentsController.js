@@ -4,8 +4,8 @@ const prisma = new PrismaClient();
 // Create a comment
 const createComment = async (req, res) => {
     const { content } = req.body;
-    const postId = parseInt(req.params.postId, 10); // Parse postId to an integer
-    const userId = req.user.id; // Extracted from JWT
+    const postId = parseInt(req.params.postId, 10);
+    const userId = req.user.id;
   
     try {
       // Ensure the post exists
@@ -36,7 +36,7 @@ const createComment = async (req, res) => {
     try {
       const comments = await prisma.comment.findMany({
         where: { postId: parseInt(postId) },
-        include: { user: true }, // Include comment author info
+        include: { user: true },
       });
   
       res.status(200).json(comments);
@@ -51,16 +51,16 @@ const createComment = async (req, res) => {
     const commentId = parseInt(req.params.commentId, 10);
     const { content } = req.body;
     const userId = req.user.id;
-    const userRole = req.user.role; // Assuming `role` is part of the `req.user` object
+    const userRole = req.user.role;
   
     try {
       const comment = await prisma.comment.findUnique({
         where: { id: Number(commentId) },
-        include: { post: true }, // Include the post to check author
+        include: { post: true },
       });
       if (!comment) return res.status(404).json({ message: "Comment not found" });
   
-      // Check if the user is the comment creator, the post author, or an admin
+      
       if (comment.userId !== userId && comment.post.authorId !== userId && userRole !== "admin") {
         return res.status(403).json({ message: "You are not authorized to edit this comment" });
       }
@@ -79,16 +79,16 @@ const createComment = async (req, res) => {
   
   // Delete a comment
   const deleteComment = async (req, res) => {
-    const commentId = parseInt(req.params.commentId, 10); // Parse commentId to an integer
+    const commentId = parseInt(req.params.commentId, 10);
     const userId = req.user.id;
-    const userRole = req.user.role; // Assuming `role` is part of the `req.user` object
+    const userRole = req.user.role;
   
     try {
       const comment = await prisma.comment.findUnique({ where: { id: commentId } });
   
       if (!comment) return res.status(404).json({ error: "Comment not found" });
   
-      // Ensure the user is the comment author, the post author, or an admin
+      
       const post = await prisma.post.findUnique({ where: { id: comment.postId } });
   
       if (comment.userId !== userId && post.authorId !== userId && userRole !== "admin") {

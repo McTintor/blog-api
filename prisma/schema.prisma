@@ -12,10 +12,10 @@ model User {
   username  String   @unique
   email     String   @unique
   password  String
-  role      String   @default("reader") // "reader" or "author"
+  role      String   @default("reader")
   createdAt DateTime @default(now())
-  posts     Post[]   @relation("UserPosts") // Reverse relation
-  comments  Comment[] // Reverse relation for comments
+  posts     Post[]   @relation("UserPosts")
+  comments  Comment[]
 }
 
 model Post {

@@ -42,7 +42,7 @@ const loginUser = async (req, res) => {
 // Get user details
 const getUserDetails = async (req, res) => {
   try {
-    const { id } = req.user; // Assumes req.user is populated by Passport
+    const { id } = req.user;
     const user = await prisma.user.findUnique({ where: { id } });
     if (!user) return res.status(404).json({ error: "User not found" });
     res.json(user);
