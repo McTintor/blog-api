@@ -62,13 +62,13 @@ The API will be running at http://localhost:5000.
 
 
 ## API Endpoints
-- POST /register: Register a new user (sign up).
-- POST /login: Log in and get a JWT token.
-- GET /posts: Get all blog posts.
-- POST /posts: Create a new blog post (requires authentication).
-- PUT /posts/:id: Edit an existing blog post (requires authentication).
-- DELETE /posts/:id: Delete a blog post (requires authentication).
-- GET /posts/:id: Get details of a specific post by ID.
-- POST /posts/:id/comments: Add a comment to a post.
-- PUT /comments/:id: Edit a comment (requires authentication).
-- DELETE /comments/:id: Delete a comment (requires authentication).
+- POST /api/users/register: Register a new user (sign up).
+- POST /api/users/login: Log in and get a JWT token.
+- GET /api/posts: Get all blog posts.
+- POST /api/posts: Create a new blog post (requires authentication).
+- PUT /api/posts/:id: Edit an existing blog post (requires authentication).
+- DELETE /api/posts/:id: Delete a blog post (requires authentication).
+- GET /api/posts/:id: Get details of a specific post by ID.
+- POST /api/posts/:id/comments: Add a comment to a post.
+- PUT /api/comments/:id: Edit a comment (requires authentication).
+- DELETE /api/comments/:id: Delete a comment (requires authentication).
